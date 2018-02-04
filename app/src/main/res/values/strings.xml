@@ -8,4 +8,7 @@
     <string name="ui_login_username">Username</string>
     <string name="ui_login_password">Password</string>
     <string name="ui_login_login">Login</string>
+
+    <string name="error_invalid_credentials">Invalid username/password</string>
+    <string name="error_server_error">A server error has occurred</string>
 </resources>
