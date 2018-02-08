@@ -18,5 +18,7 @@
     <string name="error_invalid_credentials">Invalid username/password</string>
     <string name="error_server_error">A server error has occurred</string>
 
+    <string name="contentdesc_login_logo">CATeDroid Logo</string>
+
     <string name="generic_two_input_format">%1$s %2$s</string>
 </resources>

@@ -7,14 +7,25 @@
     android:background="@drawable/login_background">
 
 
+    <ImageView
+        android:id="@+id/login_app_logo"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/contentdesc_login_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/launch_image" />
+
     <LinearLayout
         android:id="@+id/login_layout_login_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/login_app_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,7 +38,7 @@
             android:textAlignment="center"
             android:textColor="@color/imperial_core_light_grey"
             android:textSize="30sp"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/login_login_instructions"
@@ -120,5 +131,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="CATeDroid x.y.z-dev.0" />
+        tools:text="CATeDroid x.y.z-dev.w" />
 </android.support.constraint.ConstraintLayout>
