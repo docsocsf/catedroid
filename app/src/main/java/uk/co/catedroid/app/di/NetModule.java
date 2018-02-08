@@ -1,11 +1,13 @@
 package uk.co.catedroid.app.di;
 
 import android.app.Application;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
@@ -19,8 +21,19 @@ import javax.net.ssl.X509TrustManager;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Authenticator;
+import okhttp3.Credentials;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.Route;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import uk.co.catedroid.app.R;
+import uk.co.catedroid.app.api.CateService;
+import uk.co.catedroid.app.auth.LoginManager;
 
 @Module
 public class NetModule {
@@ -32,9 +45,7 @@ public class NetModule {
     }
 
     @Provides
-    @Singleton
     OkHttpClient providesOkHttpClient() {
-
         // Setting up SSL for cloud-vm-46-64
         SSLContext sslContext;
         TrustManager[] trustManagers;
@@ -42,7 +53,7 @@ public class NetModule {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null, null);
 
-            InputStream certInputStream = app.getResources().openRawResource(R.raw.cloud_vm_46_64);
+            InputStream certInputStream = app.getResources().openRawResource(R.raw.cloud_vm_46_64_cert);
             BufferedInputStream bis = new BufferedInputStream(certInputStream);
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             while (bis.available() > 0) {
@@ -61,9 +72,43 @@ public class NetModule {
             return null;
         }
 
+        Authenticator authenticator = new Authenticator() {
+            @Nullable
+            @Override
+            public Request authenticate(Route route, Response response) throws IOException {
+                LoginManager loginManager = new LoginManager(app.getSharedPreferences(
+                        "catedroid", Context.MODE_PRIVATE));
+                if (loginManager.hasStoredCredentials()) {
+
+                    RequestBody requestBody = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("username", loginManager.getLogin().getUsername())
+                            .addFormDataPart("password", loginManager.getLogin().getPassword())
+                            .build();
+
+                    return response.request().newBuilder()
+                            .post(requestBody)
+                            .build();
+                }
+                return null;
+            }
+        };
+
         return new OkHttpClient.Builder()
                 .sslSocketFactory(sslContext.getSocketFactory(),
                         (X509TrustManager) trustManagers[0])
+                .authenticator(authenticator)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    CateService providesCateService(OkHttpClient client) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://cloud-vm-46-64.doc.ic.ac.uk:5000/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(CateService.class);
     }
 }

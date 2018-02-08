@@ -23,6 +23,9 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
+    // RecyclerView
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.0"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
@@ -37,6 +40,14 @@ dependencies {
 
     // OkHttp
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    // Butterknife
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     // Android testing
     testImplementation 'junit:junit:4.12'

@@ -14,20 +14,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import uk.co.catedroid.app.R;
 import uk.co.catedroid.app.viewmodel.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private View layoutLoginForm;
-    private View layoutInProgress;
+    @BindView(R.id.login_layout_login_form) protected View layoutLoginForm;
+    @BindView(R.id.login_layout_in_progress) protected View layoutInProgress;
 
-    private EditText usernameField;
-    private EditText passwordField;
-    private TextView errorField;
-    private Button loginButton;
+    @BindView(R.id.login_username_field) protected EditText usernameField;
+    @BindView(R.id.login_password_field) protected EditText passwordField;
+    @BindView(R.id.login_error_field) protected TextView errorField;
+    @BindView(R.id.login_login_button) protected Button loginButton;
 
-    private TextView appInfoField;
+    @BindView(R.id.login_app_info) protected TextView appInfoField;
 
     private LoginViewModel model;
 
@@ -35,16 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        this.layoutLoginForm = this.findViewById(R.id.login_layout_login_form);
-        this.layoutInProgress = this.findViewById(R.id.login_layout_in_progress);
-
-        this.usernameField = this.findViewById(R.id.login_username_field);
-        this.passwordField = this.findViewById(R.id.login_password_field);
-        this.errorField = this.findViewById(R.id.login_error_field);
-        this.loginButton = this.findViewById(R.id.login_login_button);
-
-        this.appInfoField = this.findViewById(R.id.login_app_info);
+        ButterKnife.bind(this);
 
         this.model = ViewModelProviders.of(this).get(LoginViewModel.class);
 
@@ -76,15 +70,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        this.loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = usernameField.getText().toString();
-                String password = passwordField.getText().toString();
-                model.performLogin(username, password);
-            }
-        });
-
         // Setting app info text
         String versionText = "";
         try {
@@ -96,6 +81,13 @@ public class LoginActivity extends AppCompatActivity {
         }
         this.appInfoField.setText(getResources().getString(R.string.app_info_format,
                 getString(R.string.app_name), versionText));
+    }
+
+    @OnClick(R.id.login_login_button)
+    protected void doLogin() {
+        String username = usernameField.getText().toString();
+        String password = passwordField.getText().toString();
+        model.performLogin(username, password);
     }
 
     public void setErrorText(String text) {
@@ -119,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void goToMainActivity() {
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, DashboardActivity.class);
         startActivity(i);
         finish();
     }

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -22,6 +23,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import uk.co.catedroid.app.CATeApplication;
 import uk.co.catedroid.app.R;
+import uk.co.catedroid.app.auth.LoginManager;
 
 public class LoginViewModel extends AndroidViewModel {
 
@@ -37,6 +39,9 @@ public class LoginViewModel extends AndroidViewModel {
     @Inject
     OkHttpClient httpClient;
 
+    @Inject
+    SharedPreferences sharedPreferences;
+
     public LoginViewModel(@NonNull Application application) {
         super(application);
         ((CATeApplication) application).getNetComponent().inject(this);
@@ -51,6 +56,9 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void performLogin(String username, String password) {
+        final String finalUsername = username;
+        final String finalPassword = password;
+
         state.postValue(LOGIN_VIEW_STATES.LOGIN_IN_PROGRESS);
 
         if (username.equals("") || password.equals("")) {
@@ -83,7 +91,8 @@ public class LoginViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.code() == HttpURLConnection.HTTP_OK) {
-                    //TODO: Get user information and save it
+                    LoginManager loginManager = new LoginManager(sharedPreferences);
+                    loginManager.saveLogin(finalUsername, finalPassword, getApplication());
                     state.postValue(LOGIN_VIEW_STATES.LOGGED_IN);
                 } else if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     error.postValue(getApplication().getResources().getString(
