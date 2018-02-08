@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/materialRed100" />
+    <solid android:color="@color/material_red_100" />
     <stroke
         android:width="1dp"
-        android:color="@color/materialRed300" />
+        android:color="@color/material_red_300" />
     <padding
         android:bottom="12dp"
         android:left="10dp"

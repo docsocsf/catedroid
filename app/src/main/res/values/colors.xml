@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/imperialImperialBlue</color>
-    <color name="colorPrimaryDark">@color/imperialNavy</color>
+    <color name="colorPrimary">@color/imperial_core_imperial_blue</color>
+    <color name="colorPrimaryDark">@color/imperial_core_navy</color>
     <color name="colorAccent">#9E4770</color>
-    <!--<color name="colorPrimary">#3F51B5</color>-->
-    <!--<color name="colorPrimaryDark">#303F9F</color>-->
-    <!--<color name="colorAccent">#FF4081</color>-->
 
     <!-- Imperial Core Colours -->
     <!-- See https://www.imperial.ac.uk/brand-style-guide/visual-identity/brand-colours/ -->
-    <color name="imperialNavy">#002147</color>
-    <color name="imperialImperialBlue">#003E74</color>
-    <color name="imperialLightGrey">#EBEEEE</color>
-    <color name="imperialCoolGrey">#9D9D9D</color>
-    <color name="imperialLightBlue">#D4EFFC</color>
+    <color name="imperial_core_navy">#002147</color>
+    <color name="imperial_core_imperial_blue">#003E74</color>
+    <color name="imperial_core_light_grey">#EBEEEE</color>
+    <color name="imperial_core_cool_grey">#9D9D9D</color>
+    <color name="imperial_core_light_blue">#D4EFFC</color>
 
     <!-- Imperial Supporting Colours -->
     <!-- Warm Colours -->
-    <color name="imperialBrick">#A51900</color>
-    <color name="imperialRed">#DD2501</color>
-    <color name="imperialCherry">#E40043</color>
+    <color name="imperial_supporting_brick">#A51900</color>
+    <color name="imperial_supporting_red">#DD2501</color>
+    <color name="imperial_supporting_cherry">#E40043</color>
+
+    <!-- Imperial SAML Login Page Colours -->
+    <color name="imperial_SAML_login_btn_bg">#006EAF</color>
+    <color name="imperial_SAML_login_btn_bg_hover">#009EFC</color>
 
     <!-- Material Colours -->
-    <color name="materialRed100">#FFCDD2</color>
-    <color name="materialRed200">#EF9A9A</color>
-    <color name="materialRed300">#E57373</color>
-    <color name="materialRed400">#EF5350</color>
-    <color name="materialRed500">#F44336</color>
-    <color name="materialRed600">#E53935</color>
-    <color name="materialRed700">#D32F2F</color>
+    <color name="material_red_100">#FFCDD2</color>
+    <color name="material_red_200">#EF9A9A</color>
+    <color name="material_red_300">#E57373</color>
+    <color name="material_red_400">#EF5350</color>
+    <color name="material_red_500">#F44336</color>
+    <color name="material_red_600">#E53935</color>
+    <color name="material_red_700">#D32F2F</color>
 </resources>

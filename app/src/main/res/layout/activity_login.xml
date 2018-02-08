@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ui_login_title"
             android:textAlignment="center"
-            android:textColor="@color/imperialLightGrey"
+            android:textColor="@color/imperial_core_light_grey"
             android:textSize="30sp"
             android:visibility="visible" />
 
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ui_login_instruction"
             android:textAlignment="center"
-            android:textColor="@color/imperialLightGrey"
+            android:textColor="@color/imperial_core_light_grey"
             android:visibility="visible" />
 
         <LinearLayout
@@ -72,7 +72,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/login_error_background"
             android:gravity="center_horizontal"
-            android:textColor="@color/materialRed600"
+            android:textColor="@color/material_red_600"
             android:visibility="gone"
             tools:text="Error"
             tools:visibility="visible" />
@@ -84,7 +84,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/login_button_background"
             android:text="@string/ui_login_login"
-            android:textColor="@color/imperialLightGrey" />
+            android:textColor="@color/imperial_core_light_grey" />
 
     </LinearLayout>
 
@@ -116,7 +116,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:textColor="@color/imperialLightGrey"
+        android:textColor="@color/imperial_core_light_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
