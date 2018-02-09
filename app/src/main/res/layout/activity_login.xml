@@ -56,24 +56,37 @@
             android:layout_marginTop="8dp"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/login_username_field"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/login_username_field_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/login_username_background"
-                android:ems="10"
-                android:hint="@string/ui_login_username"
-                android:inputType="textNoSuggestions|textVisiblePassword" />
+                android:background="@drawable/login_username_background" >
 
-            <EditText
-                android:id="@+id/login_password_field"
+                <EditText
+                    android:id="@+id/login_username_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/ui_login_username"
+                    android:inputType="textNoSuggestions|textVisiblePassword" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/login_password_field_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/login_password_background"
-                android:ems="10"
-                android:hint="@string/ui_login_password"
-                android:inputType="textPassword" />
+                android:background="@drawable/login_password_background" >
 
+                <EditText
+                    android:id="@+id/login_password_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/ui_login_password"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
         <TextView
