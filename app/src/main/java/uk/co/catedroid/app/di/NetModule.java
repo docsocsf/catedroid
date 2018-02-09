@@ -2,7 +2,6 @@ package uk.co.catedroid.app.di;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -22,7 +21,6 @@ import javax.net.ssl.X509TrustManager;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Authenticator;
-import okhttp3.Credentials;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -79,7 +77,6 @@ public class NetModule {
                 LoginManager loginManager = new LoginManager(app.getSharedPreferences(
                         "catedroid", Context.MODE_PRIVATE));
                 if (loginManager.hasStoredCredentials()) {
-
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
                             .addFormDataPart("username", loginManager.getLogin().getUsername())

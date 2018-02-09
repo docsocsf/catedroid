@@ -30,7 +30,8 @@ public class UserInfoRepository {
 
             @Override
             public void onFailure(Call<UserInfo> call, Throwable t) {
-                Log.e("CATe", "welp");
+                Log.e("CATe", "UserInfoRepository - Failed to get user info: "
+                        + t.getMessage(), t);
             }
         });
 

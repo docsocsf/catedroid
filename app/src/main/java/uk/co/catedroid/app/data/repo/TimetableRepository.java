@@ -32,7 +32,8 @@ public class TimetableRepository {
 
             @Override
             public void onFailure(Call<List<Exercise>> call, Throwable t) {
-                Log.e("CATe", "welp");
+                Log.e("CATe", "TimetableRepository - Failed to get timetable: "
+                        + t.getMessage(), t);
             }
         });
 
