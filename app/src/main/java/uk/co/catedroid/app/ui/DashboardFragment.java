@@ -2,35 +2,28 @@ package uk.co.catedroid.app.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import uk.co.catedroid.app.CATeApplication;
 import uk.co.catedroid.app.R;
-import uk.co.catedroid.app.auth.LoginManager;
 import uk.co.catedroid.app.data.model.Exercise;
 import uk.co.catedroid.app.data.model.UserInfo;
 import uk.co.catedroid.app.viewmodel.DashboardViewModel;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardFragment extends Fragment {
 
     @BindView(R.id.dashboard_greeting_text) protected TextView greetingText;
     @BindView(R.id.dashboard_user_info_text) protected TextView userInfoText;
@@ -38,28 +31,16 @@ public class DashboardActivity extends AppCompatActivity {
     @BindView(R.id.dashboard_timetable_list) protected RecyclerView recyclerView;
 
     private List<Exercise> exercises;
-    private DashboardTimetableAdapter timetableAdapter;
 
-    private DashboardViewModel viewModel;
-
-    @Inject
-    SharedPreferences sharedPrefs;
-
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
-        ButterKnife.bind(this);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        ButterKnife.bind(this, rootView);
 
-        viewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
+        DashboardViewModel viewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
 
-        ((CATeApplication) getApplication()).getNetComponent().inject(this);
-
-        LoginManager loginManager = new LoginManager(sharedPrefs);
-        String uname = loginManager.getLogin().getUsername();
-        Toast.makeText(this, "Logged in as: " + uname, Toast.LENGTH_SHORT).show();
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         recyclerView.setHasFixedSize(true);
@@ -82,6 +63,8 @@ public class DashboardActivity extends AppCompatActivity {
                 updateTimetableInfo(exercises);
             }
         });
+
+        return rootView;
     }
 
     private void updateUserInfo(UserInfo userInfo) {
@@ -102,34 +85,11 @@ public class DashboardActivity extends AppCompatActivity {
 
         if (this.exercises == null) {
             this.exercises = exercises;
-            timetableAdapter = new DashboardTimetableAdapter(this, outstandingExercises);
+            DashboardTimetableAdapter timetableAdapter = new DashboardTimetableAdapter(getContext(), outstandingExercises);
             recyclerView.setAdapter(timetableAdapter);
         }
 
-
-
         outstandingExercisesText.setText(getResources().getString(
                 R.string.ui_dashboard_outstanding_exercises_format, outstandingExercises.size()));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_dashboard, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.main_menu_logout:
-                LoginManager loginManager = new LoginManager(sharedPrefs);
-                loginManager.logout();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }

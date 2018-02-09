@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void goToMainActivity() {
-        Intent i = new Intent(this, DashboardActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
     }

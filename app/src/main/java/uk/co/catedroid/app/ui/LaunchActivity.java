@@ -26,7 +26,7 @@ public class LaunchActivity extends AppCompatActivity {
         Intent intent;
 
         if (loginManager.hasStoredCredentials()) {
-            intent = new Intent(this, DashboardActivity.class);
+            intent = new Intent(this, MainActivity.class);
         } else {
             intent = new Intent(this, LoginActivity.class);
         }
