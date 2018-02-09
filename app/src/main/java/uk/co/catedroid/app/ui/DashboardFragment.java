@@ -78,7 +78,7 @@ public class DashboardFragment extends Fragment {
         List<Exercise> outstandingExercises = new ArrayList<>();
 
         for (Exercise e : exercises) {
-            if (e.getSubmisisonStatus().equals("N-S")) {
+            if (!e.getSubmissionStatus().equals("OK")) {
                 outstandingExercises.add(e);
             }
         }

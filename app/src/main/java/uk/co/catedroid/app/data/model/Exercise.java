@@ -8,7 +8,7 @@ public class Exercise {
     private String start;
     private String end;
     @SerializedName("assessed_status") private String assessedStatus;
-    @SerializedName("submission_status") private String submisisonStatus;
+    @SerializedName("submission_status") private String submissionStatus;
     @SerializedName("module_number") private String moduleNumber;
     @SerializedName("module_name") private String moduleName;
 
@@ -32,8 +32,8 @@ public class Exercise {
         return assessedStatus;
     }
 
-    public String getSubmisisonStatus() {
-        return submisisonStatus;
+    public String getSubmissionStatus() {
+        return submissionStatus;
     }
 
     public String getModuleNumber() {
