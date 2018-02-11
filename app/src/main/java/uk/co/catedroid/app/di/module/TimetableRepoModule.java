@@ -1,4 +1,4 @@
-package uk.co.catedroid.app.di;
+package uk.co.catedroid.app.di.module;
 
 import android.app.Application;
 
@@ -10,26 +10,17 @@ import dagger.Provides;
 import uk.co.catedroid.app.CATeApplication;
 import uk.co.catedroid.app.api.CateService;
 import uk.co.catedroid.app.data.repo.TimetableRepository;
-import uk.co.catedroid.app.data.repo.UserInfoRepository;
 
 @Module(includes = NetModule.class)
-public class UserInfoRepoModule {
-    private UserInfoRepository userInfoRepository;
+public class TimetableRepoModule {
     private TimetableRepository timetableRepository;
 
     @Inject
     CateService service;
 
-    public UserInfoRepoModule(Application application) {
+    public TimetableRepoModule(Application application) {
         ((CATeApplication) application).getNetComponent().inject(this);
-        userInfoRepository = new UserInfoRepository(service);
         timetableRepository = new TimetableRepository(service);
-    }
-
-    @Provides
-    @Singleton
-    UserInfoRepository providesUserInfoRepository() {
-        return userInfoRepository;
     }
 
     @Provides

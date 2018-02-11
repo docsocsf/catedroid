@@ -1,4 +1,4 @@
-package uk.co.catedroid.app.di;
+package uk.co.catedroid.app.di.module;
 
 import android.app.Application;
 import android.content.Context;

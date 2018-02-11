@@ -2,18 +2,23 @@ package uk.co.catedroid.app;
 
 import android.app.Application;
 
-import uk.co.catedroid.app.di.DaggerNetComponent;
-import uk.co.catedroid.app.di.DaggerUserInfoRepoComponent;
-import uk.co.catedroid.app.di.NetComponent;
-import uk.co.catedroid.app.di.NetModule;
-import uk.co.catedroid.app.di.SharedPreferencesModule;
-import uk.co.catedroid.app.di.UserInfoRepoComponent;
-import uk.co.catedroid.app.di.UserInfoRepoModule;
+import uk.co.catedroid.app.di.component.DaggerDashboardComponent;
+import uk.co.catedroid.app.di.component.DaggerNetComponent;
+import uk.co.catedroid.app.di.component.DaggerNotesComponent;
+import uk.co.catedroid.app.di.component.DashboardComponent;
+import uk.co.catedroid.app.di.component.NetComponent;
+import uk.co.catedroid.app.di.component.NotesComponent;
+import uk.co.catedroid.app.di.module.NetModule;
+import uk.co.catedroid.app.di.module.NotesRepoModule;
+import uk.co.catedroid.app.di.module.SharedPreferencesModule;
+import uk.co.catedroid.app.di.module.TimetableRepoModule;
+import uk.co.catedroid.app.di.module.UserInfoRepoModule;
 
 public class CATeApplication extends Application {
 
     private NetComponent netComponent;
-    private UserInfoRepoComponent userInfoRepoComponent;
+    private DashboardComponent dashboardComponent;
+    private NotesComponent notesComponent;
 
     @Override
     public void onCreate() {
@@ -24,8 +29,13 @@ public class CATeApplication extends Application {
                 .sharedPreferencesModule(new SharedPreferencesModule(this))
                 .build();
 
-        userInfoRepoComponent = DaggerUserInfoRepoComponent.builder()
+        dashboardComponent = DaggerDashboardComponent.builder()
                 .userInfoRepoModule(new UserInfoRepoModule(this))
+                .timetableRepoModule(new TimetableRepoModule(this))
+                .build();
+
+        notesComponent = DaggerNotesComponent.builder()
+                .notesRepoModule(new NotesRepoModule(this))
                 .build();
     }
 
@@ -33,7 +43,11 @@ public class CATeApplication extends Application {
         return netComponent;
     }
 
-    public UserInfoRepoComponent getUserInfoRepoComponent() {
-        return userInfoRepoComponent;
+    public DashboardComponent getDashboardComponent() {
+        return dashboardComponent;
+    }
+
+    public NotesComponent getNotesComponent() {
+        return notesComponent;
     }
 }

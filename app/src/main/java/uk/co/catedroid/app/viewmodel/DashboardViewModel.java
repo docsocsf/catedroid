@@ -27,7 +27,7 @@ public class DashboardViewModel extends AndroidViewModel {
 
     public DashboardViewModel(@NonNull Application application) {
         super(application);
-        ((CATeApplication) application).getUserInfoRepoComponent().inject(this);
+        ((CATeApplication) application).getDashboardComponent().inject(this);
 
         userInfo = userInfoRepo.getUser();
         timetable = timetableRepository.getTimetable();

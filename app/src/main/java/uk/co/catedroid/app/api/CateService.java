@@ -5,6 +5,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.POST;
 import uk.co.catedroid.app.data.model.Exercise;
+import uk.co.catedroid.app.data.model.Note;
 import uk.co.catedroid.app.data.model.UserInfo;
 
 public interface CateService {
@@ -13,4 +14,7 @@ public interface CateService {
 
     @POST("timetable")
     Call<List<Exercise>> getTimetable();
+
+    @POST("notes")
+    Call<List<Note>> getNotes();
 }
