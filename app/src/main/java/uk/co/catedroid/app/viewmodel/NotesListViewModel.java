@@ -23,11 +23,13 @@ public class NotesListViewModel extends AndroidViewModel {
     public NotesListViewModel(@NonNull Application application) {
         super(application);
         ((CATeApplication) application).getNotesComponent().inject(this);
-
-        notes = notesRepo.getNotes();
     }
 
     public LiveData<List<Note>> getNotes() {
+        if (notes == null) {
+            notes = notesRepo.getNotes();
+        }
+
         return notes;
     }
 }

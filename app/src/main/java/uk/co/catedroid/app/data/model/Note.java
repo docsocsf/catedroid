@@ -58,4 +58,13 @@ public class Note {
     public String getModuleName() {
         return moduleName;
     }
+
+    @Override
+    public String toString() {
+        return "Note{" +
+                "moduleNumber='" + moduleNumber + '\'' +
+                ", moduleName='" + moduleName + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

@@ -62,11 +62,11 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/login_username_background" >
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/login_username_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/login_field_background"
                     android:hint="@string/ui_login_username"
                     android:inputType="textNoSuggestions|textVisiblePassword" />
 
@@ -78,11 +78,11 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/login_password_background" >
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/login_password_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/login_field_background"
                     android:hint="@string/ui_login_password"
                     android:inputType="textPassword" />
 

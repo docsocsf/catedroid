@@ -40,4 +40,10 @@ public class DashboardViewModel extends AndroidViewModel {
     public LiveData<List<Exercise>> getTimetable() {
         return timetable;
     }
+
+    public void exerciseClicked(Exercise e) {
+        if (e.getSpecKey() != null) {
+            timetableRepository.downloadSpec(e.getSpecKey());
+        }
+    }
 }

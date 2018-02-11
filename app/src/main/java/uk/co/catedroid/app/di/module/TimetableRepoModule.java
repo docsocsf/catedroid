@@ -20,7 +20,7 @@ public class TimetableRepoModule {
 
     public TimetableRepoModule(Application application) {
         ((CATeApplication) application).getNetComponent().inject(this);
-        timetableRepository = new TimetableRepository(service);
+        timetableRepository = new TimetableRepository(application, service);
     }
 
     @Provides

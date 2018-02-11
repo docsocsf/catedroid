@@ -27,11 +27,13 @@ public class NotesListFragment extends Fragment {
 
         NotesListViewModel viewModel = ViewModelProviders.of(this).get(NotesListViewModel.class);
 
-
         viewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
                 Log.d("CATe", "NotesListFragment/notes changed");
+                for (Note n: notes) {
+                    Log.d("CATe", "  " + n.toString());
+                }
             }
         });
 

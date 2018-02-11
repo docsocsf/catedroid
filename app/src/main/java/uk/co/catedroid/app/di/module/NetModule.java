@@ -21,6 +21,7 @@ import javax.net.ssl.X509TrustManager;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Authenticator;
+import okhttp3.Credentials;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -77,14 +78,9 @@ public class NetModule {
                 LoginManager loginManager = new LoginManager(app.getSharedPreferences(
                         "catedroid", Context.MODE_PRIVATE));
                 if (loginManager.hasStoredCredentials()) {
-                    RequestBody requestBody = new MultipartBody.Builder()
-                            .setType(MultipartBody.FORM)
-                            .addFormDataPart("username", loginManager.getLogin().getUsername())
-                            .addFormDataPart("password", loginManager.getLogin().getPassword())
-                            .build();
-
+                    String credential = Credentials.basic(loginManager.getLogin().getUsername(), loginManager.getLogin().getPassword());
                     return response.request().newBuilder()
-                            .post(requestBody)
+                            .addHeader("Authorization", credential)
                             .build();
                 }
                 return null;

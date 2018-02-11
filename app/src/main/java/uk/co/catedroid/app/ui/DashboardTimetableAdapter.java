@@ -12,6 +12,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import uk.co.catedroid.app.R;
 import uk.co.catedroid.app.data.model.Exercise;
 
@@ -19,10 +20,12 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
 
     private List<Exercise> exercises;
     private Context context;
+    private DashboardTimetableItemClickedListener listener;
 
-    public DashboardTimetableAdapter(Context context, List<Exercise> exercises) {
+    public DashboardTimetableAdapter(Context context, List<Exercise> exercises, DashboardTimetableItemClickedListener itemClickedListener) {
         this.context = context;
         this.exercises = exercises;
+        this.listener = itemClickedListener;
     }
 
     @Override
@@ -40,51 +43,7 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Exercise exercise = exercises.get(position);
 
-        viewHolder.codeText.setText(exercise.getCode());
-        viewHolder.nameText.setText(exercise.getName());
-        viewHolder.moduleText.setText(getContext().getResources().getString(
-                R.string.ui_dashboard_timetable_item_module_format,
-                exercise.getModuleNumber(), exercise.getModuleName()
-        ));
-        viewHolder.endDateText.setText(getContext().getResources().getString(
-                R.string.ui_dashboard_timetable_item_enddate_format, exercise.getEnd()));
-
-        // Set item background according to assessed status
-        int assessedBGResource;
-        switch (exercise.getAssessedStatus()) {
-            case "UA-SR":
-                assessedBGResource = R.color.cate_exercise_unassessed_submissionrequired;
-                break;
-            case "A-I":
-                assessedBGResource = R.color.cate_exercise_assessed_individual;
-                break;
-            case "A-G":
-                assessedBGResource = R.color.cate_exercise_assessed_group;
-                break;
-            default:
-                assessedBGResource = R.color.cate_exercise_unassessed;
-                break;
-        }
-
-        // Set submission status indicator
-        int submissionBGResource = assessedBGResource;
-        int submissionDueSoonBGResource = assessedBGResource;
-        switch (exercise.getSubmissionStatus()) {
-            case "N-S-DS":
-                submissionDueSoonBGResource = R.color.cate_exercise_not_submitted;
-            case "N-S":
-                submissionBGResource = R.color.cate_exercise_not_submitted;
-                break;
-            case "I-DS":
-                submissionDueSoonBGResource = R.color.cate_exercise_incomplete_submission;
-            case "I":
-                submissionBGResource = R.color.cate_exercise_incomplete_submission;
-                break;
-        }
-
-        viewHolder.itemLayout.setBackgroundResource(assessedBGResource);
-        viewHolder.submissionIndicator.setBackgroundResource(submissionBGResource);
-        viewHolder.submissionDueSoonIndicator.setBackgroundResource(submissionDueSoonBGResource);
+        viewHolder.setExercise(exercise);
     }
 
     @Override
@@ -92,11 +51,17 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
         return exercises.size();
     }
 
-    public Context getContext() {
+    private Context getContext() {
         return context;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    private DashboardTimetableItemClickedListener getListener() {
+        return listener;
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        private Exercise exercise;
+
         @BindView(R.id.dashboard_timetable_item_layout) View itemLayout;
         @BindView(R.id.dashboard_timetable_item_submission_indicator) View submissionIndicator;
         @BindView(R.id.dashboard_timetable_item_submission_indicator_due_soon) View submissionDueSoonIndicator;
@@ -105,9 +70,69 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
         @BindView(R.id.dashboard_timetable_item_module) TextView moduleText;
         @BindView(R.id.dashboard_timetable_item_enddate) TextView endDateText;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+        void setExercise(Exercise e) {
+            exercise = e;
+
+            codeText.setText(exercise.getCode());
+            nameText.setText(exercise.getName());
+            moduleText.setText(getContext().getResources().getString(
+                    R.string.ui_dashboard_timetable_item_module_format,
+                    exercise.getModuleNumber(), exercise.getModuleName()
+            ));
+            endDateText.setText(getContext().getResources().getString(
+                    R.string.ui_dashboard_timetable_item_enddate_format, exercise.getEnd()));
+
+            // Set item background according to assessed status
+            int assessedBGResource;
+            switch (exercise.getAssessedStatus()) {
+                case "UA-SR":
+                    assessedBGResource = R.color.cate_exercise_unassessed_submissionrequired;
+                    break;
+                case "A-I":
+                    assessedBGResource = R.color.cate_exercise_assessed_individual;
+                    break;
+                case "A-G":
+                    assessedBGResource = R.color.cate_exercise_assessed_group;
+                    break;
+                default:
+                    assessedBGResource = R.color.cate_exercise_unassessed;
+                    break;
+            }
+
+            // Set submission status indicator
+            int submissionBGResource = assessedBGResource;
+            int submissionDueSoonBGResource = assessedBGResource;
+            switch (exercise.getSubmissionStatus()) {
+                case "N-S-DS":
+                    submissionDueSoonBGResource = R.color.cate_exercise_not_submitted;
+                case "N-S":
+                    submissionBGResource = R.color.cate_exercise_not_submitted;
+                    break;
+                case "I-DS":
+                    submissionDueSoonBGResource = R.color.cate_exercise_incomplete_submission;
+                case "I":
+                    submissionBGResource = R.color.cate_exercise_incomplete_submission;
+                    break;
+            }
+
+            itemLayout.setBackgroundResource(assessedBGResource);
+            submissionIndicator.setBackgroundResource(submissionBGResource);
+            submissionDueSoonIndicator.setBackgroundResource(submissionDueSoonBGResource);
+        }
+
+        @OnClick(R.id.dashboard_timetable_item_layout)
+        void itemClicked() {
+            Log.d("CATe", "Timetable item clicked! " + nameText.getText());
+            getListener().onClick(exercise);
+        }
+    }
+
+    public interface DashboardTimetableItemClickedListener {
+        void onClick(Exercise e);
     }
 }

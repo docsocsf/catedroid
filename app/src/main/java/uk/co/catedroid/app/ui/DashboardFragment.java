@@ -30,6 +30,8 @@ public class DashboardFragment extends Fragment {
     @BindView(R.id.dashboard_timetable_outstanding_exercises_text) protected TextView outstandingExercisesText;
     @BindView(R.id.dashboard_timetable_list) protected RecyclerView recyclerView;
 
+    private DashboardViewModel viewModel;
+
     private List<Exercise> exercises;
 
     @Nullable
@@ -38,7 +40,7 @@ public class DashboardFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this, rootView);
 
-        DashboardViewModel viewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -85,11 +87,22 @@ public class DashboardFragment extends Fragment {
 
         if (this.exercises == null) {
             this.exercises = exercises;
-            DashboardTimetableAdapter timetableAdapter = new DashboardTimetableAdapter(getContext(), outstandingExercises);
+            DashboardTimetableAdapter timetableAdapter = new DashboardTimetableAdapter(getContext(),
+                    outstandingExercises,
+                    new DashboardTimetableAdapter.DashboardTimetableItemClickedListener() {
+                @Override
+                public void onClick(Exercise e) {
+                    dashboardExerciseClicked(e);
+                }
+            });
             recyclerView.setAdapter(timetableAdapter);
         }
 
         outstandingExercisesText.setText(getResources().getString(
                 R.string.ui_dashboard_outstanding_exercises_format, outstandingExercises.size()));
+    }
+
+    private void dashboardExerciseClicked(Exercise exercise) {
+        viewModel.exerciseClicked(exercise);
     }
 }
