@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,9 +26,10 @@ import uk.co.catedroid.app.viewmodel.DashboardViewModel;
 
 public class DashboardFragment extends Fragment {
 
-    @BindView(R.id.dashboard_greeting_text) protected TextView greetingText;
-    @BindView(R.id.dashboard_user_info_text) protected TextView userInfoText;
+    @BindView(R.id.dashboard_userinfo_greeting) protected TextView greetingText;
+    @BindView(R.id.dashboard_userinfo_text) protected TextView userInfoText;
     @BindView(R.id.dashboard_timetable_outstanding_exercises_text) protected TextView outstandingExercisesText;
+    @BindView(R.id.dashboard_timetable_outstanding_exercises_progress) protected ProgressBar outstandingExercisesProgress;
     @BindView(R.id.dashboard_timetable_list) protected RecyclerView recyclerView;
 
     private DashboardViewModel viewModel;
@@ -100,6 +102,7 @@ public class DashboardFragment extends Fragment {
 
         outstandingExercisesText.setText(getResources().getString(
                 R.string.ui_dashboard_outstanding_exercises_format, outstandingExercises.size()));
+        outstandingExercisesProgress.setVisibility(View.GONE);
     }
 
     private void dashboardExerciseClicked(Exercise exercise) {

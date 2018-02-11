@@ -16,11 +16,15 @@
     <color name="imperial_SAML_login_btn_bg">#006EAF</color>
     <color name="imperial_SAML_login_btn_bg_hover">#009EFC</color>
     
-    <!-- CATe Colours -->
+    <!-- CATe Colours - dark colours are the same minus 20h -->
     <color name="cate_exercise_unassessed">#FFFFFF</color>
+    <color name="cate_exercise_unassessed_dark">#DFDFDF</color>
     <color name="cate_exercise_unassessed_submissionrequired">#CDCDCD</color>
+    <color name="cate_exercise_unassessed_submissionrequired_dark">#ADADAD</color>
     <color name="cate_exercise_assessed_individual">#CCFFCC</color>
+    <color name="cate_exercise_assessed_individual_dark">#ACDFAC</color>
     <color name="cate_exercise_assessed_group">#F0CCF0</color>
+    <color name="cate_exercise_assessed_group_dark">#D0ACD0</color>
     <color name="cate_exercise_not_submitted">#FF0000</color>
     <color name="cate_exercise_incomplete_submission">#FFFF00</color>
 

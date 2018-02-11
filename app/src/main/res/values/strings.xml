@@ -13,8 +13,10 @@
     <string name="ui_main_nav_timetable">Timetable</string>
     <string name="ui_main_nav_notes">Notes</string>
 
+    <string name="ui_dashboard_userinfo_title">Your details</string>
     <string name="ui_dashboard_greeting_format">Hello, %1$s</string>
     <string name="ui_dashboard_user_info_format">%1$s %2$s</string>
+    <string name="ui_dashboard_outstanding_exercises_title">Outstanding exercises</string>
     <string name="ui_dashboard_outstanding_exercises_format">You have %1$d outstanding exercises</string>
     <string name="ui_dashboard_timetable_item_module_format">@string/generic_two_input_format</string>
     <string name="ui_dashboard_timetable_item_enddate_format">Deadline: %1$s</string>

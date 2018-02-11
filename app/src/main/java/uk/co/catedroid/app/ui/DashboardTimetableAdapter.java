@@ -91,16 +91,16 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
             int assessedBGResource;
             switch (exercise.getAssessedStatus()) {
                 case "UA-SR":
-                    assessedBGResource = R.color.cate_exercise_unassessed_submissionrequired;
+                    assessedBGResource = R.drawable.timetable_item_unassessed_submission_required;
                     break;
                 case "A-I":
-                    assessedBGResource = R.color.cate_exercise_assessed_individual;
+                    assessedBGResource = R.drawable.timetable_item_assessed_individual;
                     break;
                 case "A-G":
-                    assessedBGResource = R.color.cate_exercise_assessed_group;
+                    assessedBGResource = R.drawable.timetable_item_assessed_group;
                     break;
                 default:
-                    assessedBGResource = R.color.cate_exercise_unassessed;
+                    assessedBGResource = R.drawable.timetable_item_unassessed;
                     break;
             }
 
