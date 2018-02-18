@@ -14,6 +14,7 @@ import uk.co.catedroid.app.data.model.Exercise;
 import uk.co.catedroid.app.data.model.UserInfo;
 import uk.co.catedroid.app.data.repo.TimetableRepository;
 import uk.co.catedroid.app.data.repo.UserInfoRepository;
+import uk.co.catedroid.app.ui.DashboardTimetableAdapter;
 
 public class DashboardViewModel extends AndroidViewModel {
 
@@ -42,8 +43,6 @@ public class DashboardViewModel extends AndroidViewModel {
     }
 
     public void exerciseClicked(Exercise e) {
-        if (e.getSpecKey() != null) {
-            timetableRepository.downloadSpec(e.getSpecKey());
-        }
+        timetableRepository.downloadSpec(e);
     }
 }

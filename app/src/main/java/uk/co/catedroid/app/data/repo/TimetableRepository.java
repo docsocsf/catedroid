@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.File;
@@ -38,33 +38,40 @@ public class TimetableRepository {
         final MutableLiveData<List<Exercise>> data = new MutableLiveData<>();
         cateService.getTimetable().enqueue(new Callback<List<Exercise>>() {
             @Override
-            public void onResponse(Call<List<Exercise>> call, Response<List<Exercise>> response) {
+            public void onResponse(@NonNull Call<List<Exercise>> call, @NonNull Response<List<Exercise>> response) {
                 data.setValue(response.body());
             }
 
             @Override
-            public void onFailure(Call<List<Exercise>> call, Throwable t) {
-                Log.e("CATe", "TimetableRepository - Failed to get timetable: "
-                        + t.getMessage(), t);
+            public void onFailure(@NonNull Call<List<Exercise>> call, @NonNull Throwable t) {
+                Log.e("CATe", "TimetableRepository - Failed to get timetable: " + t.getMessage(), t);
             }
         });
 
         return data;
     }
 
-    public File downloadSpec(final String specKey) {
+    public void downloadSpec(final Exercise e) {
+        if (e.getSpecKey() == null) {
+            Log.w("CATe", "Attempt to download exercise spec with no spec key");
+            return;
+        }
+
+        final String specKey = e.getSpecKey();
         Log.d("CATe", "Downloading spec: " + specKey);
         cateService.getFile(specKey).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 ResponseBody body = response.body();
+
                 if (body == null) {
-                    Log.e("CATe", "Spec response body null");
+                    Log.e("CATe", "Timetable has a null response body");
+                    return;
                 }
 
                 File outputFile;
-                InputStream inputStream = null;
-                OutputStream outputStream = null;
+                InputStream inputStream;
+                OutputStream outputStream;
 
                 try {
                     File cacheDir = context.getCacheDir();
@@ -92,21 +99,16 @@ public class TimetableRepository {
                 }
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(CateFileProvider.getUriForFile(context,
-                        context.getApplicationContext().getPackageName()
-                                + ".uk.co.catedroid.app.provider",
-                        outputFile), "application/pdf");
+                intent.setDataAndType(CateFileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".uk.co.catedroid.app.provider", outputFile), "application/pdf");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 context.startActivity(intent);
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Log.e("CATe", "Couldn't get spec " + specKey);
             }
         });
-
-        return null;
     }
 }

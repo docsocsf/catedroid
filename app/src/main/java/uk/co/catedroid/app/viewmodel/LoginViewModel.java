@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Credentials;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -73,17 +74,21 @@ public class LoginViewModel extends AndroidViewModel {
                 .addFormDataPart("password", password)
                 .build();
 
+        String credential = Credentials.basic(username, password);
+
         Call call = httpClient.newCall(
                 new Request.Builder()
                         .url("https://cloud-vm-46-64.doc.ic.ac.uk:5000/auth")
                         .post(requestBody)
+                        .header("Authorization", credential)
                         .build()
         );
 
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call,@NonNull IOException e) {
-                Log.e("CATe", "LoginViewModel/IOException: " + e.getMessage(), e.getCause());
+                Log.e("CATe", "LoginViewModel/IOException: " + e.getMessage(),
+                        e.getCause());
                 error.postValue("An IO Exception has occurred");
                 state.postValue(LOGIN_VIEW_STATES.LOGIN_FORM);
             }

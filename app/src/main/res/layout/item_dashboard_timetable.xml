@@ -10,82 +10,115 @@
     android:focusable="true">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/dashboard_timetable_item_submission_indicator_layout"
-        android:layout_width="8dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/dashboard_timetable_item_layout_inner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <View
-            android:id="@+id/dashboard_timetable_item_submission_indicator"
-            android:layout_width="4dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/dashboard_timetable_item_submission_indicator_due_soon"
-            android:layout_width="4dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_submission_indicator"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/dashboard_timetable_item_exercise_info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_submission_indicator_layout"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/dashboard_timetable_item_code"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/dashboard_timetable_item_submission_indicator_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="8:PMT" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/dashboard_timetable_item_name"
+            <View
+                android:id="@+id/dashboard_timetable_item_submission_indicator"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/dashboard_timetable_item_submission_indicator_due_soon"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_submission_indicator"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/dashboard_timetable_item_exercise_info_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_code"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Structural Induction" />
+            app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_submission_indicator_layout"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/dashboard_timetable_item_exercise_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/dashboard_timetable_item_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="8:PMT" />
+
+                <TextView
+                    android:id="@+id/dashboard_timetable_item_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_code"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Structural Induction" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/dashboard_timetable_item_module"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_timetable_item_exercise_info"
+                tools:text="141 Reasoning about Programs" />
+
+            <TextView
+                android:id="@+id/dashboard_timetable_item_enddate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dashboard_timetable_item_exercise_info"
+                tools:text="2018-02-20" />
+        </android.support.constraint.ConstraintLayout>
+
+        <ProgressBar
+            android:id="@+id/dashboard_timetable_item_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_submission_indicator_layout"
+            app:layout_constraintTop_toBottomOf="@+id/dashboard_timetable_item_exercise_info_layout"
+            tools:visibility="visible" />
 
     </android.support.constraint.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/dashboard_timetable_item_module"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dashboard_timetable_item_submission_indicator_layout"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_timetable_item_exercise_info"
-        tools:text="141 Reasoning about Programs" />
-
-    <TextView
-        android:id="@+id/dashboard_timetable_item_enddate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_timetable_item_exercise_info"
-        tools:text="2018-02-20" />
 </android.support.constraint.ConstraintLayout>

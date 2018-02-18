@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         model.performLogin(username, password);
     }
 
-    public void setErrorText(String text) {
+    private void setErrorText(String text) {
         if (text != null && !text.equals("")) {
             errorField.setText(text);
             errorField.setVisibility(View.VISIBLE);
@@ -100,17 +100,17 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void showLoginForm() {
+    private void showLoginForm() {
         layoutLoginForm.setVisibility(View.VISIBLE);
         layoutInProgress.setVisibility(View.GONE);
     }
 
-    public void showLoginInProgress() {
+    private void showLoginInProgress() {
         layoutLoginForm.setVisibility(View.GONE);
         layoutInProgress.setVisibility(View.VISIBLE);
     }
 
-    public void goToMainActivity() {
+    private void goToMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();

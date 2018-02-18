@@ -26,11 +26,16 @@ import uk.co.catedroid.app.viewmodel.DashboardViewModel;
 
 public class DashboardFragment extends Fragment {
 
-    @BindView(R.id.dashboard_userinfo_greeting) protected TextView greetingText;
-    @BindView(R.id.dashboard_userinfo_text) protected TextView userInfoText;
-    @BindView(R.id.dashboard_timetable_outstanding_exercises_text) protected TextView outstandingExercisesText;
-    @BindView(R.id.dashboard_timetable_outstanding_exercises_progress) protected ProgressBar outstandingExercisesProgress;
-    @BindView(R.id.dashboard_timetable_list) protected RecyclerView recyclerView;
+    @BindView(R.id.dashboard_userinfo_greeting)
+    protected TextView greetingText;
+    @BindView(R.id.dashboard_userinfo_text)
+    protected TextView userInfoText;
+    @BindView(R.id.dashboard_timetable_outstanding_exercises_text)
+    protected TextView outstandingExercisesText;
+    @BindView(R.id.dashboard_timetable_outstanding_exercises_progress)
+    protected ProgressBar outstandingExercisesProgress;
+    @BindView(R.id.dashboard_timetable_list)
+    protected RecyclerView recyclerView;
 
     private DashboardViewModel viewModel;
 
@@ -73,8 +78,7 @@ public class DashboardFragment extends Fragment {
 
     private void updateUserInfo(UserInfo userInfo) {
         String firstName = userInfo.getName().split(" ")[0];
-        greetingText.setText(
-                getResources().getString(R.string.ui_dashboard_greeting_format, firstName));
+        greetingText.setText(getResources().getString(R.string.ui_dashboard_greeting_format, firstName));
         userInfoText.setText(getResources().getString(R.string.ui_dashboard_user_info_format, userInfo.getLogin(), userInfo.getCid()));
     }
 
@@ -89,23 +93,16 @@ public class DashboardFragment extends Fragment {
 
         if (this.exercises == null) {
             this.exercises = exercises;
-            DashboardTimetableAdapter timetableAdapter = new DashboardTimetableAdapter(getContext(),
-                    outstandingExercises,
-                    new DashboardTimetableAdapter.DashboardTimetableItemClickedListener() {
+            DashboardTimetableAdapter timetableAdapter = new DashboardTimetableAdapter(getContext(), outstandingExercises, new DashboardTimetableAdapter.DashboardTimetableItemClickedListener() {
                 @Override
                 public void onClick(Exercise e) {
-                    dashboardExerciseClicked(e);
+                    viewModel.exerciseClicked(e);
                 }
             });
             recyclerView.setAdapter(timetableAdapter);
         }
 
-        outstandingExercisesText.setText(getResources().getString(
-                R.string.ui_dashboard_outstanding_exercises_format, outstandingExercises.size()));
+        outstandingExercisesText.setText(getResources().getQuantityString(R.plurals.ui_dashboard_timetable_outstanding_exercises_format, outstandingExercises.size()));
         outstandingExercisesProgress.setVisibility(View.GONE);
-    }
-
-    private void dashboardExerciseClicked(Exercise exercise) {
-        viewModel.exerciseClicked(exercise);
     }
 }

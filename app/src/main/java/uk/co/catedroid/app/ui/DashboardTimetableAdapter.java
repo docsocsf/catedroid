@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
     private Context context;
     private DashboardTimetableItemClickedListener listener;
 
-    public DashboardTimetableAdapter(Context context, List<Exercise> exercises, DashboardTimetableItemClickedListener itemClickedListener) {
+    DashboardTimetableAdapter(Context context, List<Exercise> exercises, DashboardTimetableItemClickedListener itemClickedListener) {
         this.context = context;
         this.exercises = exercises;
         this.listener = itemClickedListener;
@@ -35,8 +36,7 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
 
         View contactView = inflater.inflate(R.layout.item_dashboard_timetable, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
     @Override
@@ -62,13 +62,22 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
     class ViewHolder extends RecyclerView.ViewHolder {
         private Exercise exercise;
 
-        @BindView(R.id.dashboard_timetable_item_layout) View itemLayout;
-        @BindView(R.id.dashboard_timetable_item_submission_indicator) View submissionIndicator;
-        @BindView(R.id.dashboard_timetable_item_submission_indicator_due_soon) View submissionDueSoonIndicator;
-        @BindView(R.id.dashboard_timetable_item_code) TextView codeText;
-        @BindView(R.id.dashboard_timetable_item_name) TextView nameText;
-        @BindView(R.id.dashboard_timetable_item_module) TextView moduleText;
-        @BindView(R.id.dashboard_timetable_item_enddate) TextView endDateText;
+        @BindView(R.id.dashboard_timetable_item_layout)
+        View itemLayout;
+        @BindView(R.id.dashboard_timetable_item_submission_indicator)
+        View submissionIndicator;
+        @BindView(R.id.dashboard_timetable_item_submission_indicator_due_soon)
+        View submissionDueSoonIndicator;
+        @BindView(R.id.dashboard_timetable_item_code)
+        TextView codeText;
+        @BindView(R.id.dashboard_timetable_item_name)
+        TextView nameText;
+        @BindView(R.id.dashboard_timetable_item_module)
+        TextView moduleText;
+        @BindView(R.id.dashboard_timetable_item_enddate)
+        TextView endDateText;
+        @BindView(R.id.dashboard_timetable_item_progress)
+        ProgressBar progress;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -84,8 +93,7 @@ public class DashboardTimetableAdapter extends RecyclerView.Adapter<DashboardTim
                     R.string.ui_dashboard_timetable_item_module_format,
                     exercise.getModuleNumber(), exercise.getModuleName()
             ));
-            endDateText.setText(getContext().getResources().getString(
-                    R.string.ui_dashboard_timetable_item_enddate_format, exercise.getEnd()));
+            endDateText.setText(getContext().getResources().getString(R.string.ui_dashboard_timetable_item_enddate_format, exercise.getEnd()));
 
             // Set item background according to assessed status
             int assessedBGResource;
