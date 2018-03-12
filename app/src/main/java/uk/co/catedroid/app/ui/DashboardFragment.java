@@ -102,7 +102,8 @@ public class DashboardFragment extends Fragment {
             recyclerView.setAdapter(timetableAdapter);
         }
 
-        outstandingExercisesText.setText(getResources().getQuantityString(R.plurals.ui_dashboard_timetable_outstanding_exercises_format, outstandingExercises.size()));
+        int outstandingExercisesSize = outstandingExercises.size();
+        outstandingExercisesText.setText(getResources().getQuantityString(R.plurals.ui_dashboard_timetable_outstanding_exercises_format, outstandingExercisesSize, outstandingExercisesSize));
         outstandingExercisesProgress.setVisibility(View.GONE);
     }
 }
