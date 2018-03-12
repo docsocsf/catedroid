@@ -3,7 +3,6 @@ package uk.co.catedroid.app.auth;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.security.KeyPairGeneratorSpec;
-import android.security.keystore.KeyProperties;
 import android.util.Base64;
 import android.util.Log;
 
