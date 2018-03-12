@@ -14,7 +14,6 @@ import uk.co.catedroid.app.data.model.Exercise;
 import uk.co.catedroid.app.data.model.UserInfo;
 import uk.co.catedroid.app.data.repo.TimetableRepository;
 import uk.co.catedroid.app.data.repo.UserInfoRepository;
-import uk.co.catedroid.app.ui.DashboardTimetableAdapter;
 
 public class DashboardViewModel extends AndroidViewModel {
 
