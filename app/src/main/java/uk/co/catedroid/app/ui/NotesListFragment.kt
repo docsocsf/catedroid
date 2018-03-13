@@ -23,7 +23,7 @@ class NotesListFragment : Fragment() {
 
         val viewModel = ViewModelProviders.of(this).get(NotesListViewModel::class.java)
 
-        viewModel.notes.observe(this, Observer { notes ->
+        viewModel.notes!!.observe(this, Observer { notes ->
             Log.d("CATe", "NotesListFragment/notes changed")
             for (n in notes!!) {
                 Log.d("CATe", "  " + n.toString())
