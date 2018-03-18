@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 
@@ -53,8 +54,10 @@ class DashboardTimetableAdapter internal constructor(private val context: Contex
         lateinit var moduleText: TextView
         @BindView(R.id.dashboard_timetable_item_enddate)
         lateinit var endDateText: TextView
-        @BindView(R.id.dashboard_timetable_item_progress)
-        lateinit var progress: ProgressBar
+        @BindView(R.id.dashboard_timetable_item_exercise_spec_button)
+        lateinit var specButton: Button
+        @BindView(R.id.dashboard_timetable_item_exercise_handin_button)
+        lateinit var handinButton: Button
 
         init {
             ButterKnife.bind(this, itemView)
@@ -62,14 +65,6 @@ class DashboardTimetableAdapter internal constructor(private val context: Contex
 
         fun setExercise(e: Exercise) {
             exercise = e
-
-            codeText.text = exercise!!.code
-            nameText.text = exercise!!.name
-            moduleText.text = context.resources.getString(
-                    R.string.ui_dashboard_timetable_item_module_format,
-                    exercise!!.moduleNumber, exercise!!.moduleName
-            )
-            endDateText.text = context.resources.getString(R.string.ui_dashboard_timetable_item_enddate_format, exercise!!.end)
 
             // Set item background according to assessed status
             val assessedBGResource: Int = when (exercise!!.assessedStatus) {
@@ -98,11 +93,31 @@ class DashboardTimetableAdapter internal constructor(private val context: Contex
             itemLayout.setBackgroundResource(assessedBGResource)
             submissionIndicator.setBackgroundResource(submissionBGResource)
             submissionDueSoonIndicator.setBackgroundResource(submissionDueSoonBGResource)
+
+            codeText.text = exercise!!.code
+            nameText.text = exercise!!.name
+            moduleText.text = context.resources.getString(
+                    R.string.ui_dashboard_timetable_item_module_format,
+                    exercise!!.moduleNumber, exercise!!.moduleName
+            )
+            endDateText.text = context.resources.getString(R.string.ui_dashboard_timetable_item_enddate_format, exercise!!.end)
+
+            val showSpecButton = exercise!!.specKey != null
+            val showHandinButton = exercise!!.links?.containsKey("handin") == true
+
+            if (!(showSpecButton || showHandinButton))  {
+                specButton.visibility = View.GONE
+                handinButton.visibility = View.GONE
+            } else {
+                specButton.visibility = if (showSpecButton) View.VISIBLE else View.INVISIBLE
+                handinButton.visibility = if (showHandinButton) View.VISIBLE else View.INVISIBLE
+            }
         }
 
-        @OnClick(R.id.dashboard_timetable_item_layout)
-        fun itemClicked() {
-            Log.d("CATe", "Timetable item clicked! " + nameText.text)
+        @OnClick(R.id.dashboard_timetable_item_exercise_spec_button)
+        fun specButtonClicked() {
+            Log.d("CATe", "Spec button clicked! " + nameText.text)
+            specButton.isEnabled = false
             listener.onClick(exercise)
         }
     }

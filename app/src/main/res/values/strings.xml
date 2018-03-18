@@ -9,6 +9,8 @@
     <string name="ui_login_password">Password</string>
     <string name="ui_login_login">Log In</string>
 
+    <string name="ui_main_menu_logout">Logout</string>
+
     <string name="ui_main_nav_home">Home</string>
     <string name="ui_main_nav_timetable">Timetable</string>
     <string name="ui_main_nav_notes">Notes</string>
@@ -23,8 +25,8 @@
     </plurals>
     <string name="ui_dashboard_timetable_item_module_format">@string/generic_two_input_format</string>
     <string name="ui_dashboard_timetable_item_enddate_format">Deadline: %1$s</string>
-
-
+    <string name="ui_dashboard_timetable_item_spec_button">View Spec</string>
+    <string name="ui_dashboard_timetable_item_handin_button">Hand In</string>
 
     <string name="error_invalid_credentials">Invalid username/password</string>
     <string name="error_server_error">A server error has occurred</string>

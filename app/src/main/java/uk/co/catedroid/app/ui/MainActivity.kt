@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             switchFragment(KEY_FRAGMENT_HOME, true)
         }
 
-        bottomNavigationMenu!!.setOnNavigationItemSelectedListener { item ->
+        bottomNavigationMenu.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_nav_home -> {
                     Log.d("CATe", "Home")

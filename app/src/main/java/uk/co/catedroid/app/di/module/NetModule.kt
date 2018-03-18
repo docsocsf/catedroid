@@ -51,7 +51,7 @@ class NetModule(private val app: Application) {
         trustManagers = trustManagerFactory.trustManagers
         sslContext.init(null, trustManagers, null)
 
-        val authenticator = Authenticator { route, response ->
+        val authenticator = Authenticator { _, response ->
             val loginManager = LoginManager(app.getSharedPreferences(
                     "catedroid", Context.MODE_PRIVATE))
             if (loginManager.hasStoredCredentials()) {

@@ -3,8 +3,6 @@ package uk.co.catedroid.app.data.repo
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
-import android.content.Intent
-import android.support.v4.content.FileProvider
 import android.util.Log
 
 import java.io.File
@@ -43,30 +41,32 @@ constructor(private val context: Context, private val cateService: CateService) 
             return data
         }
 
-    fun downloadSpec(e: Exercise) {
-        /*if (e.specKey == null) {
+    fun downloadSpec(e: Exercise, lv: MutableLiveData<File>) {
+        if (e.specKey == null) {
             Log.w("CATe", "Attempt to download exercise spec with no spec key")
             return
-        }*/
+        }
 
-        val specKey = e.specKey
-        Log.d("CATe", "Downloading spec: $specKey")
-        cateService.getFile(specKey).enqueue(object : Callback<ResponseBody> {
+        Log.d("CATe", "Downloading spec: ${e.specKey}")
+        cateService.getFile(e.specKey).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 val body = response.body()
 
                 if (body == null) {
-                    Log.e("CATe", "Timetable has a null response body")
+                    Log.e("CATe", "Spec has a null response body")
                     return
                 }
 
                 val outputFile: File
+                val contentDisposition = response.headers()["Content-Disposition"]
+                val outputFilename =
+                        contentDisposition?.substring(22, contentDisposition.length - 1)
+
                 val inputStream: InputStream
                 val outputStream: OutputStream
 
                 try {
-                    val cacheDir = context.cacheDir
-                    outputFile = File.createTempFile(specKey, "pdf", cacheDir)
+                    outputFile = File(context.cacheDir, outputFilename)
 
                     val fileReader = ByteArray(4096)
 
@@ -89,17 +89,11 @@ constructor(private val context: Context, private val cateService: CateService) 
                     return
                 }
 
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(FileProvider.getUriForFile(context,
-                        context.applicationContext.packageName + ".uk.co.catedroid.app.provider",
-                        outputFile), "application/pdf")
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                context.startActivity(intent)
+                lv.value = outputFile
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("CATe", "Couldn't get spec $specKey")
+                Log.e("CATe", "Couldn't get spec ${e.specKey}")
             }
         })
     }

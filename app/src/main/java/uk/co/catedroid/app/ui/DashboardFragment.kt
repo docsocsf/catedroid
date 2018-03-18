@@ -2,8 +2,10 @@ package uk.co.catedroid.app.ui
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.FileProvider
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -62,6 +64,18 @@ class DashboardFragment : Fragment() {
             updateTimetableInfo(exercises)
         })
 
+        viewModel!!.specFile.observe(this, Observer { specFile ->
+            Log.d("CATe", "Spec downloaded: $specFile")
+
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setDataAndType(FileProvider.getUriForFile(context,
+                    "${context.applicationContext.packageName}.uk.co.catedroid.app.provider",
+                    specFile), "application/pdf")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            context.startActivity(intent)
+        })
+
         return rootView
     }
 
@@ -73,21 +87,18 @@ class DashboardFragment : Fragment() {
 
     private fun updateTimetableInfo(exercises: List<Exercise>?) {
         val outstandingExercises = ArrayList<Exercise>()
-
-        for (e in exercises!!) {
-            if (e.submissionStatus != "OK") {
-                outstandingExercises.add(e)
-            }
-        }
+        exercises!!
+                .filter {it.submissionStatus != "OK"}
+                .forEach { outstandingExercises.add(it) }
 
         if (this.exercises == null) {
             this.exercises = exercises
             val timetableAdapter = DashboardTimetableAdapter(context, outstandingExercises,
                     object : DashboardTimetableAdapter.DashboardTimetableItemClickedListener {
-                override fun onClick(e: Exercise?) {
-                    viewModel!!.exerciseClicked(e!!)
-                }
-            })
+                        override fun onClick(e: Exercise?) {
+                            viewModel!!.exerciseClicked(e!!)
+                        }
+                    })
 
             recyclerView.adapter = timetableAdapter
         }
