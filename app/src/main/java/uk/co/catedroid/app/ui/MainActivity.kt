@@ -3,7 +3,6 @@ package uk.co.catedroid.app.ui
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -12,8 +11,8 @@ import android.view.MenuItem
 
 import javax.inject.Inject
 
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.activity_main.*
+
 import uk.co.catedroid.app.CATeApplication
 import uk.co.catedroid.app.R
 import uk.co.catedroid.app.auth.LoginManager
@@ -22,16 +21,12 @@ class MainActivity : AppCompatActivity() {
 
     private var currentFragment = -1
 
-    @BindView(R.id.main_bottom_navigation)
-    lateinit var bottomNavigationMenu: BottomNavigationView
-
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ButterKnife.bind(this)
         (application as CATeApplication).netComponent.inject(this)
 
         if (savedInstanceState != null) {
@@ -41,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             switchFragment(KEY_FRAGMENT_HOME, true)
         }
 
-        bottomNavigationMenu.setOnNavigationItemSelectedListener { item ->
+        main_bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_nav_home -> {
                     Log.d("CATe", "Home")
@@ -96,7 +91,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-
         private const val STATE_CURRENT_FRAGMENT = "catedroid.main.currentfragment"
         private const val KEY_FRAGMENT_HOME = 0
         private const val KEY_FRAGMENT_TIMETABLE = 1
