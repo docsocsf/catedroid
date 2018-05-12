@@ -7,12 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
 
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
+import kotlinx.android.synthetic.main.item_dashboard_timetable.view.*
+
 import uk.co.catedroid.app.R
 import uk.co.catedroid.app.data.model.Exercise
 
@@ -44,27 +41,17 @@ class DashboardTimetableAdapter internal constructor(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private lateinit var exercise: Exercise
 
-        @BindView(R.id.dashboard_timetable_item_layout)
-        lateinit var itemLayout: View
-        @BindView(R.id.dashboard_timetable_item_submission_indicator)
-        lateinit var submissionIndicator: View
-        @BindView(R.id.dashboard_timetable_item_submission_indicator_due_soon)
-        lateinit var submissionDueSoonIndicator: View
-        @BindView(R.id.dashboard_timetable_item_code)
-        lateinit var codeText: TextView
-        @BindView(R.id.dashboard_timetable_item_name)
-        lateinit var nameText: TextView
-        @BindView(R.id.dashboard_timetable_item_module)
-        lateinit var moduleText: TextView
-        @BindView(R.id.dashboard_timetable_item_enddate)
-        lateinit var endDateText: TextView
-        @BindView(R.id.dashboard_timetable_item_exercise_spec_button)
-        lateinit var specButton: Button
-        @BindView(R.id.dashboard_timetable_item_exercise_handin_button)
-        lateinit var handinButton: Button
-
         init {
-            ButterKnife.bind(this, itemView)
+            itemView.dashboard_timetable_item_exercise_spec_button.setOnClickListener {
+                Log.d("CATe", "Spec button clicked! " + exercise.name)
+                itemView.dashboard_timetable_item_exercise_spec_button.isEnabled = false
+                onSpecClicked(exercise)
+            }
+
+            itemView.dashboard_timetable_item_exercise_handin_button.setOnClickListener {
+                Log.d("CATe", "HandIn button clicked! " + exercise.name)
+                onHandInClicked(exercise)
+            }
         }
 
         fun setExercise(e: Exercise) {
@@ -94,40 +81,28 @@ class DashboardTimetableAdapter internal constructor(
                 "I" -> submissionBGResource = R.color.cate_exercise_incomplete_submission
             }
 
-            itemLayout.setBackgroundResource(assessedBGResource)
-            submissionIndicator.setBackgroundResource(submissionBGResource)
-            submissionDueSoonIndicator.setBackgroundResource(submissionDueSoonBGResource)
+            itemView.dashboard_timetable_item_layout.setBackgroundResource(assessedBGResource)
+            itemView.dashboard_timetable_item_submission_indicator.setBackgroundResource(submissionBGResource)
+            itemView.dashboard_timetable_item_submission_indicator_due_soon.setBackgroundResource(submissionDueSoonBGResource)
 
-            codeText.text = exercise.code
-            nameText.text = exercise.name
-            moduleText.text = context.resources.getString(
+            itemView.dashboard_timetable_item_code.text = exercise.code
+            itemView.dashboard_timetable_item_name.text = exercise.name
+            itemView.dashboard_timetable_item_module.text = context.resources.getString(
                     R.string.ui_dashboard_timetable_item_module_format,
                     exercise.moduleNumber, exercise.moduleName
             )
-            endDateText.text = context.resources.getString(R.string.ui_dashboard_timetable_item_enddate_format, exercise.end)
+            itemView.dashboard_timetable_item_enddate.text = context.resources.getString(R.string.ui_dashboard_timetable_item_enddate_format, exercise.end)
 
             if (exercise.specKey == null) {
+                val specButton: Button = itemView.dashboard_timetable_item_exercise_spec_button
                 specButton.isEnabled = false
                 specButton.text = context.resources
                         .getString(R.string.ui_dashboard_timetable_item_spec_button_disabled)
             }
 
             if (exercise.links?.containsKey("handin") != true) {
-                handinButton.visibility = View.GONE
+                itemView.dashboard_timetable_item_exercise_handin_button.visibility = View.GONE
             }
-        }
-
-        @OnClick(R.id.dashboard_timetable_item_exercise_spec_button)
-        fun specButtonClicked() {
-            Log.d("CATe", "Spec button clicked! " + exercise.name)
-            specButton.isEnabled = false
-            onSpecClicked(exercise)
-        }
-
-        @OnClick(R.id.dashboard_timetable_item_exercise_handin_button)
-        fun handInButtonClicked() {
-            Log.d("CATe", "HandIn button clicked! " + exercise.name)
-            onHandInClicked(exercise)
         }
     }
 }
