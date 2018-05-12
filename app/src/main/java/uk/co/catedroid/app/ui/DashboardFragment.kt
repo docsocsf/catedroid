@@ -7,18 +7,15 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.TextView
 
 import java.util.ArrayList
 
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_dashboard.*
+
 import uk.co.catedroid.app.R
 import uk.co.catedroid.app.data.model.Exercise
 import uk.co.catedroid.app.data.model.UserInfo
@@ -26,45 +23,39 @@ import uk.co.catedroid.app.viewmodel.DashboardViewModel
 
 class DashboardFragment : Fragment() {
 
-    @BindView(R.id.dashboard_userinfo_greeting)
-    lateinit var greetingText: TextView
-    @BindView(R.id.dashboard_userinfo_text)
-    lateinit var userInfoText: TextView
-    @BindView(R.id.dashboard_timetable_outstanding_exercises_text)
-    lateinit var outstandingExercisesText: TextView
-    @BindView(R.id.dashboard_timetable_outstanding_exercises_progress)
-    lateinit var outstandingExercisesProgress: ProgressBar
-    @BindView(R.id.dashboard_timetable_list)
-    lateinit var recyclerView: RecyclerView
-
-    private var viewModel: DashboardViewModel? = null
-
-    private var exercises: List<Exercise>? = null
+    private lateinit var viewModel: DashboardViewModel
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater!!.inflate(R.layout.fragment_dashboard, container, false)
-        ButterKnife.bind(this, rootView)
+        return inflater!!.inflate(R.layout.fragment_dashboard, container, false)
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        val llm = LinearLayoutManager(context)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        dashboard_timetable_list.layoutManager = llm
+        dashboard_timetable_list.setHasFixedSize(true)
+        dashboard_timetable_list.isNestedScrollingEnabled = false
 
         viewModel = ViewModelProviders.of(this).get(DashboardViewModel::class.java)
 
-        val llm = LinearLayoutManager(context)
-        llm.orientation = LinearLayoutManager.VERTICAL
-        recyclerView.layoutManager = llm
-        recyclerView.setHasFixedSize(true)
-        recyclerView.isNestedScrollingEnabled = false
-
-        viewModel!!.userInfo.observe(this, Observer { userInfo -> updateUserInfo(userInfo) })
-
-        viewModel!!.timetable.observe(this, Observer { exercises ->
-            if (exercises == null) {
-                Log.e("CATe", "Timetable update NULL")
-                return@Observer
+        viewModel.userInfo.observe(this, Observer { userInfo ->
+            if (userInfo != null) {
+                updateUserInfo(userInfo)
+            } else {
+                Log.w("CATe", "UserInfo update null")
             }
-            updateTimetableInfo(exercises)
         })
 
-        viewModel!!.specFile.observe(this, Observer { specFile ->
+        viewModel.timetable.observe(this, Observer { exercises ->
+            if (exercises != null) {
+                updateTimetableInfo(exercises)
+            } else {
+                Log.e("CATe", "Timetable update NULL")
+            }
+        })
+
+        viewModel.specFile.observe(this, Observer { specFile ->
             Log.d("CATe", "Spec downloaded: $specFile")
 
             val intent = Intent(Intent.ACTION_VIEW)
@@ -75,36 +66,26 @@ class DashboardFragment : Fragment() {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context.startActivity(intent)
         })
-
-        return rootView
     }
 
-    private fun updateUserInfo(userInfo: UserInfo?) {
-        val firstName = userInfo!!.name.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
-        greetingText.text = resources.getString(R.string.ui_dashboard_greeting_format, firstName)
-        userInfoText.text = resources.getString(R.string.ui_dashboard_user_info_format, userInfo.login, userInfo.cid)
+    private fun updateUserInfo(userInfo: UserInfo) {
+        dashboard_userinfo_greeting.text = resources.getString(
+                R.string.ui_dashboard_greeting_format, userInfo.name)
+        dashboard_userinfo_text.text = resources.getString(
+                R.string.ui_dashboard_user_info_format, userInfo.login, userInfo.cid)
     }
 
-    private fun updateTimetableInfo(exercises: List<Exercise>?) {
+    private fun updateTimetableInfo(exercises: List<Exercise>) {
         val outstandingExercises = ArrayList<Exercise>()
-        exercises!!
-                .filter {it.submissionStatus != "OK"}
-                .forEach { outstandingExercises.add(it) }
+        exercises.filter { it.submissionStatus != "OK" }.forEach { outstandingExercises.add(it) }
 
-        if (this.exercises == null) {
-            this.exercises = exercises
-            val timetableAdapter = DashboardTimetableAdapter(context, outstandingExercises,
-                    object : DashboardTimetableAdapter.DashboardTimetableItemClickedListener {
-                        override fun onClick(e: Exercise?) {
-                            viewModel!!.exerciseClicked(e!!)
-                        }
-                    })
-
-            recyclerView.adapter = timetableAdapter
-        }
+        dashboard_timetable_list.adapter = DashboardTimetableAdapter(
+                context, outstandingExercises,
+                { viewModel.exerciseClicked(it) },
+                { Log.d("CATe", "${it.code} ${it.name} Hand in") })
 
         val outstandingExercisesSize = outstandingExercises.size
-        outstandingExercisesText.text = resources.getQuantityString(R.plurals.ui_dashboard_timetable_outstanding_exercises_format, outstandingExercisesSize, outstandingExercisesSize)
-        outstandingExercisesProgress.visibility = View.GONE
+        dashboard_timetable_outstanding_exercises_text.text = resources.getQuantityString(R.plurals.ui_dashboard_timetable_outstanding_exercises_format, outstandingExercisesSize, outstandingExercisesSize)
+        dashboard_timetable_outstanding_exercises_progress.visibility = View.GONE
     }
 }

@@ -26,6 +26,7 @@
     <string name="ui_dashboard_timetable_item_module_format">@string/generic_two_input_format</string>
     <string name="ui_dashboard_timetable_item_enddate_format">Deadline: %1$s</string>
     <string name="ui_dashboard_timetable_item_spec_button">View Spec</string>
+    <string name="ui_dashboard_timetable_item_spec_button_disabled">No Spec Available</string>
     <string name="ui_dashboard_timetable_item_handin_button">Hand In</string>
 
     <string name="error_invalid_credentials">Invalid username/password</string>

@@ -16,7 +16,11 @@ import butterknife.OnClick
 import uk.co.catedroid.app.R
 import uk.co.catedroid.app.data.model.Exercise
 
-class DashboardTimetableAdapter internal constructor(private val context: Context, private val exercises: List<Exercise>, private val listener: DashboardTimetableItemClickedListener): RecyclerView.Adapter<DashboardTimetableAdapter.ViewHolder>() {
+class DashboardTimetableAdapter internal constructor(
+        private val context: Context, private val exercises: List<Exercise>,
+        private val onSpecClicked: (Exercise) -> Unit,
+        private val onHandInClicked: (Exercise) -> Unit) :
+        RecyclerView.Adapter<DashboardTimetableAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DashboardTimetableAdapter.ViewHolder {
         val context = parent.context
@@ -38,7 +42,7 @@ class DashboardTimetableAdapter internal constructor(private val context: Contex
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var exercise: Exercise? = null
+        private lateinit var exercise: Exercise
 
         @BindView(R.id.dashboard_timetable_item_layout)
         lateinit var itemLayout: View
@@ -67,7 +71,7 @@ class DashboardTimetableAdapter internal constructor(private val context: Contex
             exercise = e
 
             // Set item background according to assessed status
-            val assessedBGResource: Int = when (exercise!!.assessedStatus) {
+            val assessedBGResource: Int = when (exercise.assessedStatus) {
                 "UA-SR" -> R.drawable.timetable_item_unassessed_submission_required
                 "A-I" -> R.drawable.timetable_item_assessed_individual
                 "A-G" -> R.drawable.timetable_item_assessed_group
@@ -77,7 +81,7 @@ class DashboardTimetableAdapter internal constructor(private val context: Contex
             // Set submission status indicator
             var submissionBGResource = assessedBGResource
             var submissionDueSoonBGResource = assessedBGResource
-            when (exercise!!.submissionStatus) {
+            when (exercise.submissionStatus) {
                 "N-S-DS" -> {
                     submissionDueSoonBGResource = R.color.cate_exercise_not_submitted
                     submissionBGResource = R.color.cate_exercise_not_submitted
@@ -94,35 +98,36 @@ class DashboardTimetableAdapter internal constructor(private val context: Contex
             submissionIndicator.setBackgroundResource(submissionBGResource)
             submissionDueSoonIndicator.setBackgroundResource(submissionDueSoonBGResource)
 
-            codeText.text = exercise!!.code
-            nameText.text = exercise!!.name
+            codeText.text = exercise.code
+            nameText.text = exercise.name
             moduleText.text = context.resources.getString(
                     R.string.ui_dashboard_timetable_item_module_format,
-                    exercise!!.moduleNumber, exercise!!.moduleName
+                    exercise.moduleNumber, exercise.moduleName
             )
-            endDateText.text = context.resources.getString(R.string.ui_dashboard_timetable_item_enddate_format, exercise!!.end)
+            endDateText.text = context.resources.getString(R.string.ui_dashboard_timetable_item_enddate_format, exercise.end)
 
-            val showSpecButton = exercise!!.specKey != null
-            val showHandinButton = exercise!!.links?.containsKey("handin") == true
+            if (exercise.specKey == null) {
+                specButton.isEnabled = false
+                specButton.text = context.resources
+                        .getString(R.string.ui_dashboard_timetable_item_spec_button_disabled)
+            }
 
-            if (!(showSpecButton || showHandinButton))  {
-                specButton.visibility = View.GONE
+            if (exercise.links?.containsKey("handin") != true) {
                 handinButton.visibility = View.GONE
-            } else {
-                specButton.visibility = if (showSpecButton) View.VISIBLE else View.INVISIBLE
-                handinButton.visibility = if (showHandinButton) View.VISIBLE else View.INVISIBLE
             }
         }
 
         @OnClick(R.id.dashboard_timetable_item_exercise_spec_button)
         fun specButtonClicked() {
-            Log.d("CATe", "Spec button clicked! " + nameText.text)
+            Log.d("CATe", "Spec button clicked! " + exercise.name)
             specButton.isEnabled = false
-            listener.onClick(exercise)
+            onSpecClicked(exercise)
         }
-    }
 
-    interface DashboardTimetableItemClickedListener {
-        fun onClick(e: Exercise?)
+        @OnClick(R.id.dashboard_timetable_item_exercise_handin_button)
+        fun handInButtonClicked() {
+            Log.d("CATe", "HandIn button clicked! " + exercise.name)
+            onHandInClicked(exercise)
+        }
     }
 }
