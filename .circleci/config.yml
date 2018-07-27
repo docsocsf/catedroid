@@ -1,0 +1,50 @@
+version: 2
+jobs:
+  deploy:
+    docker:
+      - image: icdocsoc/base-image:latest
+        environment:
+          ANDROID_HOME: /opt/Android
+    steps:
+      - checkout
+      - run: 
+         name: Building APK
+         command: source ~/.profile && ./gradlew build
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            source ~/.profile && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete $(git tag) ./app/build/outputs/apk/release/app-release-unsigned.apk
+
+  test:
+    docker:
+      - image: icdocsoc/base-image:latest
+    steps:
+      - checkout
+      - run: ./test.sh
+
+workflows:
+  version: 2
+  master_branch:
+    jobs:
+      - test:
+          context: org-global
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          context: org-global
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+  dev_branch:
+    jobs:
+      - test:
+          context: org-global
+          filters:
+            branches:
+              ignore:
+                - master
