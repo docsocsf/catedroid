@@ -20,7 +20,7 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-            source ~/.profile && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete $(git tag) ./app/build/outputs/apk/release/*.apk
+            source ~/.profile && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete $(git describe --tags --abbrev=0) ./app/build/outputs/apk/release/*.apk
 
   test:
     docker:
