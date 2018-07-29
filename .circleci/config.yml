@@ -7,8 +7,15 @@ jobs:
           ANDROID_HOME: /opt/Android
     steps:
       - checkout
+      - run:
+          name: "Decrypt keys"
+          command: |
+            openssl aes-256-cbc -d -in secrets/encrypted-keystore.properties -out keystore.properties -md sha256 -k $KEY
+            openssl aes-256-cbc -d -in secrets/encrypted-catedroid-release-key.jks -out catedroid-release-key.jks -md sha256 -k $KEY
+            # RUN openssl aes-256-cbc -e -in <file-in> -out <file-out> -k $KEY
+            # in order to encrypt key
       - run: 
-         name: Building APK
+         name: "Building APK"
          command: source ~/.profile && ./gradlew build
       - run:
           name: "Publish Release on GitHub"

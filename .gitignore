@@ -10,3 +10,5 @@ local.properties
 /build
 /captures
 .externalNativeBuild
+catedroid-release-key.jks
+keystore.properties
