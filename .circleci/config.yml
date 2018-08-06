@@ -1,57 +1,31 @@
 version: 2
 jobs:
-  deploy:
+  build:
+    working_directory: ~/code
     docker:
-      - image: icdocsoc/base-image:latest
-        environment:
-          ANDROID_HOME: /opt/Android
+      - image: circleci/android:api-26-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
     steps:
       - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#      - run:
+#         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+#         command: sudo chmod +x ./gradlew
       - run:
-          name: "Decrypt keys"
-          command: |
-            openssl aes-256-cbc -d -in secrets/encrypted-keystore.properties -out keystore.properties -md sha256 -k $KEY
-            openssl aes-256-cbc -d -in secrets/encrypted-catedroid-release-key.jks -out catedroid-release-key.jks -md sha256 -k $KEY
-            # RUN openssl aes-256-cbc -e -in <file-in> -out <file-out> -k $KEY
-            # in order to encrypt key
-      - run: 
-         name: "Building APK"
-         command: source ~/.profile && ./gradlew build
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: "Publish Release on GitHub"
-          command: |
-            source ~/.profile && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete $(git describe --tags --abbrev=0) ./app/build/outputs/apk/release/*.apk
-
-  test:
-    docker:
-      - image: icdocsoc/base-image:latest
-    steps:
-      - checkout
-      - run: ./test.sh
-
-workflows:
-  version: 2
-  master_branch:
-    jobs:
-      - test:
-          context: org-global
-          filters:
-            branches:
-              only:
-                - master
-      - deploy:
-          context: org-global
-          requires:
-            - test
-          filters:
-            branches:
-              only:
-                - master
-  dev_branch:
-    jobs:
-      - test:
-          context: org-global
-          filters:
-            branches:
-              ignore:
-                - master
+          name: Run Tests
+          command: ./gradlew lint test
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: app/build/test-results
+      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
