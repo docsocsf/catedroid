@@ -1,18 +1,23 @@
+android_defaults: &android_defaults
+  working_directory: ~/code
+  docker:
+    - image: circleci/android:api-26-alpha
+  environment:
+    JVM_OPTS: -Xmx3200m
+
+android_default_steps: &android_default_steps
+
 version: 2
 jobs:
   build:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-26-alpha
-    environment:
-      JVM_OPTS: -Xmx3200m
+    <<: *android_defaults
     steps:
       - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#      - run:
-#         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
-#         command: sudo chmod +x ./gradlew
+    #      - run:
+    #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+    #         command: sudo chmod +x ./gradlew
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -28,4 +33,98 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/test-results
-      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
+
+  build_release_apk:
+    <<: *android_defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    #      - run:
+    #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+    #         command: sudo chmod +x ./gradlew
+      - run:
+          name: Downloading Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Building Release APK
+          command: ./gradlew assembleRelease
+      - run:
+          name: Compressing and Aligning APK
+          command: |
+            ZIPALIGN=/opt/android/sdk/build-tools/27.0.3/zipalign
+            APK_PATH=./app/build/outputs/apk/release
+            VERSION=$(git describe --tags --abbrev=0)
+
+            ${ZIPALIGN} -v -p 4 ${APK_PATH}/app-release-unsigned.apk ${APK_PATH}/app-release-unsigned-aligned.apk
+            echo $VERSION >> ${APK_PATH}/app-version.txt
+      - run:
+          name: Signing and Verifying APK
+          command: |
+            APKSIGNER=/opt/android/sdk/build-tools/27.0.3/apksigner
+            APK_PATH=./app/build/outputs/apk/release
+
+            DECRYPTED_KEYSTORE=secrets/catedroid-release-keystore.jks
+            DECRYPTED_KEYSTORE_PASS=secrets/catedroid-release-keystore-password
+
+            openssl aes-256-cbc -d -in secrets/encrypted-catedroid-release-keystore -out ${DECRYPTED_KEYSTORE} -k ${CATEDROID_ENCRYPTION_KEY}
+            openssl aes-256-cbc -d -in secrets/encrypted-catedroid-release-keystore-password -out ${DECRYPTED_KEYSTORE_PASS} -k ${CATEDROID_ENCRYPTION_KEY}
+
+            KEYSTORE_PASSWORD=$(cat ${DECRYPTED_KEYSTORE_PASS})
+            ${APKSIGNER} sign --ks ${DECRYPTED_KEYSTORE} --ks-pass=pass:${KEYSTORE_PASSWORD} --key-pass=pass:${KEYSTORE_PASSWORD} --out ${APK_PATH}/app-release-signed.apk ${APK_PATH}/app-release-unsigned-aligned.apk
+            ${APKSIGNER} verify ${APK_PATH}/app-release-signed.apk
+      - persist_to_workspace:
+          root: app/build/outputs/apk/release
+          paths:
+            - ./app-version.txt
+            - ./*.apk
+
+  deploy_release_apk:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: ./apk
+      - run:
+          name: Publish release on GitHub
+          command: |
+            VERSION=$(cat ./apk/app-version.txt)
+            APK_NAME=catedroid-${VERSION}.apk
+
+            cp ./apk/app-release-signed.apk ${APK_NAME}
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ${APK_NAME}
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      # Build and test any commit on any branch
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      # Only build release APK and deploy from commits on master (or circleci-deploy-test) with a tag matching /^v.*/
+      - build_release_apk:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v\d*\.\d*\.\d*(?:-.*)?/
+            branches:
+              only:
+                - master
+                - circleci-deploy-test
+      - deploy_release_apk:
+          requires:
+            - build_release_apk
+          filters:
+            tags:
+              only: /^v\d*\.\d*\.\d*(?:-.*)?/
+            branches:
+              only:
+                - master
+                - circleci-deploy-test
