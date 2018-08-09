@@ -117,7 +117,6 @@ workflows:
             branches:
               only:
                 - master
-                - circleci-deploy-test
       - deploy_release_apk:
           requires:
             - build_release_apk
@@ -127,4 +126,3 @@ workflows:
             branches:
               only:
                 - master
-                - circleci-deploy-test
