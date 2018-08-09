@@ -1,0 +1,3 @@
+# Treat encrypted files in secrets folder as binary
+
+secrets/encrypted-* binary
